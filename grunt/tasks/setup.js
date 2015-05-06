@@ -25,14 +25,44 @@ module.exports = function(grunt) {
     */
   ];
 
-  var repositoriesPaths = [];
+  var repositoriesCopyPaths = [];
 
-  function buildRepositoriesPaths() {
+  function buildRepositoriesCopyPaths() {
     for (var i = 0; i < repositories.length; i++) {
-      repositoriesPaths.push(repositories[i] + "/**");
+      var repo = repositories[i];
+
+      if (repo == 'basic-web-components') {
+        continue;
+      }
+
+      repositoriesCopyPaths.push(repo + "/**");
     }
   }
-  buildRepositoriesPaths();
+  buildRepositoriesCopyPaths();
+
+  var repositoriesDeletePaths = [];
+
+  function buildRepositoriesDeletePaths() {
+    for (var i = 0; i < repositories.length; i++) {
+      var repo = repositories[i];
+
+      if (repo == 'basic-web-components') {
+        continue;
+      }
+
+      // BUGBUG - Do we need to avoid deleting bower.json, README.md, preview.png?
+      // Or should the consolidate repo have, under each component, everything that
+      // component needs for deployment? If we include bower.json files within
+      // the consolidated tree, does that interfere with a bower.json install
+      // of the consolidated package?
+
+      repositoriesDeletePaths.push('repos/' + repo + '/*');
+      repositoriesDeletePaths.push('repos/' + repo + '/.gitignore');
+      repositoriesDeletePaths.push('!repos/' + repo)
+      repositoriesDeletePaths.push('!repos/' + repo + '/.git');
+    }
+  }
+  buildRepositoriesDeletePaths();
 
   grunt.initConfig({
 
@@ -72,9 +102,13 @@ module.exports = function(grunt) {
       bwc: {
         expand: true,
         cwd: BWC_SRC_DIR,
-        src: repositoriesPaths,
+        src: repositoriesCopyPaths,
         dest: BWC_DEST_DIR
       }
+    },
+
+    clean: {
+      bwc: repositoriesDeletePaths
     }
 
   });
@@ -118,7 +152,7 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('deploy', function() {
-    grunt.task.run(['copy:bwc', 'check-status']);
+    grunt.task.run(['clean:bwc', 'copy:bwc', 'check-status']);
   });
 
 };
