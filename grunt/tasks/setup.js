@@ -4,8 +4,21 @@ module.exports = function(grunt) {
 
   var repositories = [
     'basic-web-components',
-    'basic-element',
-    'basic-autosize-textarea'
+    'basic-autosize-textarea',
+    'basic-carousel'/*,
+    'basic-aspect',
+    'basic-keyboard',
+    'basic-keyboard-direction',
+    'basic-trackpad-direction',
+    'basic-swipe-direction',
+    'basic-direction-selection',
+    'basic-item-selection',
+    'basic-accessible-list',
+    'basic-content-items',
+    'basic-children-content',
+    'basic-sliding-viewport',
+    'basic-spread-items'
+    */
   ];
 
   grunt.initConfig({
