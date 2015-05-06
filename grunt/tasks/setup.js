@@ -2,6 +2,7 @@ var exec = require("child_process").exec;
 
 var BWC_SRC_DIR = 'repos/basic-web-components/src';
 var BWC_DEST_DIR = 'repos';
+var NO_GIT_CHANGE = '# On branch master\nnothing to commit, working directory clean';
 
 module.exports = function(grunt) {
 
@@ -24,6 +25,15 @@ module.exports = function(grunt) {
     */
   ];
 
+  var repositoriesPaths = [];
+
+  function buildRepositoriesPaths() {
+    for (var i = 0; i < repositories.length; i++) {
+      repositoriesPaths.push(repositories[i] + "/**");
+    }
+  }
+  buildRepositoriesPaths();
+
   grunt.initConfig({
 
     shell: {
@@ -36,6 +46,12 @@ module.exports = function(grunt) {
           execOptions: {
             cwd: 'repos'
           }
+        }
+      },
+
+      'git-status': {
+        command: function(repo) {
+          return 'git --git-dir=./repos/' + repo + '/.git --work-tree=./repos/' + repo + ' status';
         }
       },
 
@@ -56,7 +72,7 @@ module.exports = function(grunt) {
       bwc: {
         expand: true,
         cwd: BWC_SRC_DIR,
-        src: repositories,
+        src: repositoriesPaths,
         dest: BWC_DEST_DIR
       }
     }
@@ -89,12 +105,20 @@ module.exports = function(grunt) {
     }
   });
 
+  grunt.registerTask('check-status', function() {
+    for (var i = 0; i < repositories.length; i++) {
+      var repo = repositories[i];
+
+      grunt.task.run(['shell:git-status:' + repo]);
+    }
+  });
+
   grunt.registerTask('setup', function() {
     grunt.task.run(['create-repos-dir', 'clone-repos', 'update-repos']);
   });
 
   grunt.registerTask('deploy', function() {
-    grunt.task.run(['copy:bwc']);
+    grunt.task.run(['copy:bwc', 'check-status']);
   });
 
 };
