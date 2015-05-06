@@ -32,7 +32,7 @@ module.exports = function(grunt) {
         command: function(dir) {
           return 'cd ' + dir;
         }
-      },
+      }
     }
   });
 
@@ -62,11 +62,7 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.registerTask('test', function() {
-    grunt.task.run(['create-repos-dir', 'clone-repos']);
-  });
-
-  grunt.registerTask('test1', function() {
+  grunt.registerTask('setup', function() {
     grunt.task.run(['create-repos-dir', 'clone-repos', 'update-repos']);
   })
 
