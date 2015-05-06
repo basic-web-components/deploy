@@ -1,5 +1,8 @@
 var exec = require("child_process").exec;
 
+var BWC_SRC_DIR = 'repos/basic-web-components/src';
+var BWC_DEST_DIR = 'repos';
+
 module.exports = function(grunt) {
 
   var repositories = [
@@ -22,6 +25,7 @@ module.exports = function(grunt) {
   ];
 
   grunt.initConfig({
+
     shell: {
       'git-clone': {
         command: function(repo) {
@@ -46,7 +50,17 @@ module.exports = function(grunt) {
           return 'cd ' + dir;
         }
       }
+    },
+
+    copy: {
+      bwc: {
+        expand: true,
+        cwd: BWC_SRC_DIR,
+        src: repositories,
+        dest: BWC_DEST_DIR
+      }
     }
+
   });
 
   grunt.registerTask('create-repos-dir', function() {
@@ -77,6 +91,10 @@ module.exports = function(grunt) {
 
   grunt.registerTask('setup', function() {
     grunt.task.run(['create-repos-dir', 'clone-repos', 'update-repos']);
-  })
+  });
+
+  grunt.registerTask('deploy', function() {
+    grunt.task.run(['copy:bwc']);
+  });
 
 };
