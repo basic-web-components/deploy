@@ -12,6 +12,7 @@
     "grunt-contrib-clean": "*",
     "grunt-contrib-connect": "*",
     "grunt-contrib-copy": "*",
+    "grunt-shell": "^1.1.2",
     "grunt-text-replace": "^0.4.0",
     "grunt-vulcanize": "0.5.0",
     "load-grunt-tasks": "*"
