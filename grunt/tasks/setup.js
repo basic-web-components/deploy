@@ -26,9 +26,9 @@ module.exports = function(grunt) {
     */
   ];
 
-  var repositoriesCopyPaths = [];
+  var copyPathsForRepositories = [];
 
-  function buildRepositoriesCopyPaths() {
+  function buildCopyPathsForRepositories() {
     for (var i = 0; i < repositories.length; i++) {
       var repo = repositories[i];
 
@@ -36,14 +36,14 @@ module.exports = function(grunt) {
         continue;
       }
 
-      repositoriesCopyPaths.push(repo + "/**");
+      copyPathsForRepositories.push(repo + "/**");
     }
   }
-  buildRepositoriesCopyPaths();
+  buildCopyPathsForRepositories();
 
-  var repositoriesDeletePaths = [];
+  var deletePathsForRepositories = [];
 
-  function buildRepositoriesDeletePaths() {
+  function buildDeletePathsForRepositories() {
     for (var i = 0; i < repositories.length; i++) {
       var repo = repositories[i];
 
@@ -51,19 +51,14 @@ module.exports = function(grunt) {
         continue;
       }
 
-      // BUGBUG - Do we need to avoid deleting bower.json, README.md, preview.png?
-      // Or should the consolidate repo have, under each component, everything that
-      // component needs for deployment? If we include bower.json files within
-      // the consolidated tree, does that interfere with a bower.json install
-      // of the consolidated package?
-
-      repositoriesDeletePaths.push('repos/' + repo + '/*');
-      repositoriesDeletePaths.push('repos/' + repo + '/.gitignore');
-      repositoriesDeletePaths.push('!repos/' + repo)
-      repositoriesDeletePaths.push('!repos/' + repo + '/.git');
+      // Delete everything under repos but the repo directory and its .git directory
+      deletePathsForRepositories.push('repos/' + repo + '/*');
+      deletePathsForRepositories.push('repos/' + repo + '/.gitignore');
+      deletePathsForRepositories.push('!repos/' + repo)
+      deletePathsForRepositories.push('!repos/' + repo + '/.git');
     }
   }
-  buildRepositoriesDeletePaths();
+  buildDeletePathsForRepositories();
 
   grunt.initConfig({
 
@@ -114,13 +109,13 @@ module.exports = function(grunt) {
       bwc: {
         expand: true,
         cwd: BWC_SRC_DIR,
-        src: repositoriesCopyPaths,
+        src: copyPathsForRepositories,
         dest: BWC_DEST_DIR
       }
     },
 
     clean: {
-      bwc: repositoriesDeletePaths,
+      bwc: deletePathsForRepositories,
       repos: ['repos']
     }
 
