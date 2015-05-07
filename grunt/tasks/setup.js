@@ -2,7 +2,8 @@ var exec = require("child_process").exec;
 
 var BWC_SRC_DIR = 'repos/basic-web-components/src';
 var BWC_DEST_DIR = 'repos';
-var NO_GIT_CHANGE = '# On branch master\nnothing to commit, working directory clean';
+var dirtyRepos = [];
+var currentRepo;
 
 module.exports = function(grunt) {
 
@@ -81,7 +82,18 @@ module.exports = function(grunt) {
 
       'git-status': {
         command: function(repo) {
-          return 'git --git-dir=./repos/' + repo + '/.git --work-tree=./repos/' + repo + ' status';
+          currentRepo = repo;
+          return 'git --git-dir=./repos/' + repo + '/.git --work-tree=./repos/' + repo + ' status --porcelain';
+        },
+
+        options: {
+          callback: function(err, stdout, stderr, cb) {
+            if (stdout && stdout.length > 0) {
+              dirtyRepos.push(currentRepo);
+            }
+            currentRepo = null;
+            cb();
+          }
         }
       },
 
@@ -108,7 +120,8 @@ module.exports = function(grunt) {
     },
 
     clean: {
-      bwc: repositoriesDeletePaths
+      bwc: repositoriesDeletePaths,
+      repos: ['repos']
     }
 
   });
@@ -139,7 +152,8 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.registerTask('check-status', function() {
+  grunt.registerTask('fetch-status', function() {
+    dirtyRepos = [];
     for (var i = 0; i < repositories.length; i++) {
       var repo = repositories[i];
 
@@ -147,12 +161,32 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.registerTask('setup', function() {
-    grunt.task.run(['create-repos-dir', 'clone-repos', 'update-repos']);
+  grunt.registerTask('report-status', function() {
+    if (!dirtyRepos || dirtyRepos.length == 0) {
+      grunt.log.writeln('No components have been modified');
+    }
+    else {
+      grunt.log.writeln('The following components have been modified:');
+      for (var i = 0; i < dirtyRepos.length; i++) {
+        grunt.log.writeln('-- ' + dirtyRepos[i]);
+      }
+    }
   });
 
-  grunt.registerTask('deploy', function() {
-    grunt.task.run(['clean:bwc', 'copy:bwc', 'check-status']);
+  grunt.registerTask('setup', function() {
+    grunt.task.run(['clean:repos', 'create-repos-dir', 'clone-repos']);
+  });
+
+  grunt.registerTask('update-components', function() {
+    grunt.task.run(['clean:bwc', 'copy:bwc']);
+  });
+
+  grunt.registerTask('check-status', function() {
+    grunt.task.run(['fetch-status', 'report-status']);
+  });
+
+  grunt.registerTask('default', function() {
+    grunt.task.run(['setup', 'update-components', 'check-status']);
   });
 
 };
