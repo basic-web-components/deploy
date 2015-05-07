@@ -114,6 +114,17 @@ module.exports = function(grunt) {
       }
     },
 
+    replace: {
+      bower_components: {
+        src: ['repos/**/*.html', '!repos/basic-web-components/**'],
+        overwrite: true,
+        replacements: [{
+          from: '../../bower_components',
+          to: '../bower_components'
+        }]
+      }
+    },
+
     clean: {
       bwc: deletePathsForRepositories,
       repos: ['repos']
@@ -173,7 +184,7 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('update-components', function() {
-    grunt.task.run(['clean:bwc', 'copy:bwc']);
+    grunt.task.run(['clean:bwc', 'copy:bwc', 'replace:bower_components']);
   });
 
   grunt.registerTask('check-status', function() {
