@@ -8,22 +8,33 @@ var currentRepo;
 module.exports = function(grunt) {
 
   var repositories = [
-    'basic-web-components',
-    'basic-autosize-textarea',
-    'basic-carousel'/*,
+    'basic-accessible-list',
+    'basic-arrow-direction',
     'basic-aspect',
-    'basic-keyboard',
-    'basic-keyboard-direction',
-    'basic-trackpad-direction',
-    'basic-swipe-direction',
+    'basic-autosize-textarea',
+    'basic-carousel',
+    'basic-carousel-fit',
+    'basic-children-content',
+    'basic-content-items',
+    'basic-data-items',
     'basic-direction-selection',
     'basic-item-selection',
-    'basic-accessible-list',
-    'basic-content-items',
-    'basic-children-content',
+    'basic-keyboard',
+    'basic-keyboard-direction',
+    'basic-list-box',
+    'basic-page-dots',
+    'basic-selection-highlight',
+    'basic-shared',
     'basic-sliding-viewport',
-    'basic-spread-items'
-    */
+    'basic-sliding-viewport-fit',
+    'basic-spread-fit',
+    'basic-spread-items',
+    'basic-stack',
+    'basic-swipe-direction',
+    'basic-tap-selection',
+    'basic-timer-selection',
+    'basic-trackpad-direction',
+    'basic-web-components'
   ];
 
   var copyPathsForRepositories = [];
