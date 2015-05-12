@@ -18,6 +18,7 @@ module.exports = function(grunt) {
     'basic-content-items',
     'basic-data-items',
     'basic-direction-selection',
+    'basic-framed-content',
     'basic-item-selection',
     'basic-keyboard',
     'basic-keyboard-direction',
@@ -134,7 +135,7 @@ module.exports = function(grunt) {
         overwrite: true,
         replacements: [{
           from: '../../bower_components',
-          to: '../bower_components'
+          to: '..'
         }]
       }
     },
