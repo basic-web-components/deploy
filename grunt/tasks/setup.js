@@ -113,9 +113,17 @@ module.exports = function(grunt) {
         }
       },
 
-      'change-dir': {
-        command: function(dir) {
-          return 'cd ' + dir;
+      'git-commit': {
+        command: function(repo, comment) {
+          var commandString = 'git --git-dir=./repos/' + repo + '/.git/ --work-tree=./repos/' + repo + '/ commit -a -m ' + comment;
+          return commandString;
+        }
+      },
+
+      'git-push': {
+        command: function(repo) {
+          var commandString = 'git --git-dir=./repos/' + repo + '/.git/ --work-tree=./repos/' + repo + '/ push';
+          return commandString;
         }
       }
     },
@@ -165,14 +173,6 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.registerTask('update-repos', function() {
-    for (var i = 0; i < repositories.length; i++) {
-      var repo = repositories[i];
-
-      grunt.task.run(['shell:change-dir:repos/' + repo, 'shell:git-pull', 'shell:change-dir:../..']);
-    }
-  });
-
   grunt.registerTask('fetch-status', function() {
     dirtyRepos = [];
     for (var i = 0; i < repositories.length; i++) {
@@ -192,6 +192,29 @@ module.exports = function(grunt) {
         grunt.log.writeln('-- ' + dirtyRepos[i]);
       }
     }
+  });
+
+  grunt.registerTask('push-changes-to-dirtyRepos', function(comment) {
+    if (!dirtyRepos || dirtyRepos.length == 0) {
+      grunt.log.writeln('There are no modified components to push');
+    }
+    else {
+      for (var i = 0; i < dirtyRepos.length; i++) {
+        // Commit and push
+        var commitString = 'shell:git-commit:' + dirtyRepos[i] + ':\"' + comment + '\"';
+        var pushString = 'shell:git-push:' + dirtyRepos[i];
+        grunt.task.run([commitString, pushString]);
+      }
+    }
+  });
+
+  grunt.registerTask('push-changes', function(comment) {
+    if (!comment) {
+      grunt.log.writeln('Please provide a commit comment: grunt push-changes:\"Your comment in quotation marks\"');
+      return;
+    }
+
+    grunt.task.run(['check-status', 'push-changes-to-dirtyRepos:' + comment]);
   });
 
   grunt.registerTask('setup', function() {
