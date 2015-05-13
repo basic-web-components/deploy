@@ -229,8 +229,16 @@ module.exports = function(grunt) {
     grunt.task.run(['fetch-status', 'report-status']);
   });
 
-  grunt.registerTask('default', function() {
+  grunt.registerTask('update', function() {
     grunt.task.run(['setup', 'update-components', 'check-status']);
+  });
+
+  grunt.registerTask('default', function() {
+    grunt.log.writeln('grunt commands this project supports:');
+    grunt.log.writeln('');
+    grunt.log.writeln('  grunt update');
+    grunt.log.writeln('  grunt check-status');
+    grunt.log.writeln('  grunt push-changes:\"Your commit comment in quotation marks\"');
   });
 
 };
