@@ -40,8 +40,19 @@ update () {
 
   # Put the commands you want to run against individual component repos below.
   echo "Processing" ${component}
-  #git commit -am "Update README"
-  #git push
+
+  # To commit changes
+  # git commit -am "Update README"
+  # git push
+
+  # To tag
+  # git tag -a v0.6.0 -m 'v0.6.0'
+  # git push origin v0.6.0
+
+  # To release
+  # VERSION="0.6.0"
+  # API_JSON=$(printf '{"tag_name": "v%s","target_commitish": "master","name": "v%s","draft": false,"prerelease": false}' $VERSION $VERSION)
+  # curl --data "${API_JSON}" https://api.github.com/repos/basic-web-components/${component}/releases?access_token=$GITHUB_TOKEN
 
   popd > /dev/null
 }
