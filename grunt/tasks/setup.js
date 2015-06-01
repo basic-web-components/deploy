@@ -125,6 +125,21 @@ module.exports = function(grunt) {
           var commandString = 'git --git-dir=./repos/' + repo + '/.git/ --work-tree=./repos/' + repo + '/ push';
           return commandString;
         }
+      },
+
+      'git-release': {
+        command: function(repo, tagName) {
+          var json = JSON.stringify({tag_name: tagName, target_commitish: 'master', name: tagName, draft: false, prerelease: false});
+          var token = process.env.GITHUB_TOKEN;
+          var commandString =
+            'curl --data \'' + json +
+            '\' https://api.github.com/repos/basic-web-components/' +
+            repo + '/releases?access_token=' + token;
+
+          grunt.log.writeln('commandString: ' + commandString);
+
+          return commandString;
+        }
       }
     },
 
@@ -208,6 +223,19 @@ module.exports = function(grunt) {
     }
   });
 
+  grunt.registerTask('create-release-tags', function(tag) {
+    if (!tag) {
+      grunt.log.writeln('No release tag specified');
+      return;
+    }
+
+    for (var i = 0; i < repositories.length; i++) {
+      var repo = repositories[i];
+
+      grunt.task.run(['shell:git-release:' + repo + ':' + tag]);
+    }
+  });
+
   grunt.registerTask('push-changes', function(comment) {
     if (!comment) {
       grunt.log.writeln('Please provide a commit comment: grunt push-changes:\"Your comment in quotation marks\"');
@@ -239,6 +267,7 @@ module.exports = function(grunt) {
     grunt.log.writeln('  grunt update');
     grunt.log.writeln('  grunt check-status');
     grunt.log.writeln('  grunt push-changes:\"Your commit comment in quotation marks\"');
+    grunt.log.writeln('  grunt create-release_tags:\"vX.Y.Z\"');
   });
 
 };
