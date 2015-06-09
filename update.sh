@@ -5,12 +5,14 @@ components=(
   "basic-arrow-direction"
   "basic-aspect"
   "basic-autosize-textarea"
+  "basic-button"
   "basic-carousel"
   "basic-carousel-fit"
   "basic-children-content"
   "basic-content-items"
   "basic-data-items"
   "basic-direction-selection"
+  "basic-fade-overflow"
   "basic-framed-content"
   "basic-item-selection"
   "basic-keyboard"
@@ -29,6 +31,7 @@ components=(
   "basic-stack"
   "basic-swipe-direction"
   "basic-tap-selection"
+  "basic-text-extractor"
   "basic-timer-selection"
   "basic-trackpad-direction"
 )
@@ -46,8 +49,8 @@ update () {
   # git push
 
   # To tag
-  # git tag -a v0.6.0 -m 'v0.6.0'
-  # git push origin v0.6.0
+  # git tag -a v0.6.1-pre -m 'v0.6.1-pre'
+  # git push origin v0.6.1-pre
 
   # To release
   # VERSION="0.6.0"
