@@ -29,6 +29,7 @@ module.exports = function(grunt) {
     'basic-selection-scroll',
     'basic-list-box',
     'basic-page-dots',
+    'basic-seamless-iframe',
     'basic-selection-highlight',
     'basic-shared',
     'basic-sliding-viewport',

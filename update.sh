@@ -21,6 +21,7 @@ components=(
   "basic-keyboard-prefix-selection"
   "basic-list-box"
   "basic-page-dots"
+  "basic-seamless-iframe"
   "basic-selection-highlight"
   "basic-selection-scroll"
   "basic-shared"
