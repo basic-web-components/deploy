@@ -13,11 +13,16 @@ module.exports = function(grunt) {
     'basic-aspect',
     'basic-autosize-textarea',
     'basic-button',
+    'basic-calendar-day',
+    'basic-calendar-month',
+    'basic-calendar-month-days',
+    'basic-calendar-week',
     'basic-carousel',
     'basic-carousel-fit',
     'basic-children-content',
     'basic-content-items',
     'basic-data-items',
+    'basic-days-of-week',
     'basic-direction-selection',
     'basic-fade-overflow',
     'basic-framed-content',
@@ -26,11 +31,13 @@ module.exports = function(grunt) {
     'basic-keyboard-direction',
     'basic-keyboard-paging',
     'basic-keyboard-prefix-selection',
-    'basic-selection-scroll',
     'basic-list-box',
+    'basic-month-and-year',
+    'basic-month-name',
     'basic-page-dots',
     'basic-seamless-iframe',
     'basic-selection-highlight',
+    'basic-selection-scroll',
     'basic-shared',
     'basic-sliding-viewport',
     'basic-sliding-viewport-fit',
@@ -271,7 +278,7 @@ module.exports = function(grunt) {
     grunt.log.writeln('  grunt update');
     grunt.log.writeln('  grunt check-status');
     grunt.log.writeln('  grunt push-changes:\"Your commit comment in quotation marks\"');
-    grunt.log.writeln('  grunt create-release_tags:\"vX.Y.Z\"');
+    grunt.log.writeln('  grunt create-release-tags:\"vX.Y.Z\"');
   });
 
 };
