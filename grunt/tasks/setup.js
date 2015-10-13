@@ -3,6 +3,7 @@ var exec = require("child_process").exec;
 var BWC_SRC_DIR = 'repos/basic-web-components/src';
 var BWC_DEST_DIR = 'repos';
 var dirtyRepos = [];
+var untrackedFiles = [];
 var currentRepo;
 
 module.exports = function(grunt) {
@@ -80,7 +81,7 @@ module.exports = function(grunt) {
       // Delete everything under repos but the repo directory and its .git directory
       deletePathsForRepositories.push('repos/' + repo + '/*');
       deletePathsForRepositories.push('repos/' + repo + '/.gitignore');
-      deletePathsForRepositories.push('!repos/' + repo)
+      deletePathsForRepositories.push('!repos/' + repo);
       deletePathsForRepositories.push('!repos/' + repo + '/.git');
     }
   }
@@ -121,6 +122,30 @@ module.exports = function(grunt) {
       'git-pull': {
         command: function(repo) {
           return 'git pull';
+        }
+      },
+
+      'git-list-untracked-files': {
+        command: function(repo) {
+          var commandString = 'git --git-dir=./repos/' + repo + '/.git/ --work-tree=./repos/' + repo + '/ ls-files --others --exclude-standard';
+          return commandString;
+        },
+
+        options: {
+          callback: function(err, stdout, stderr, cb) {
+            untrackedFiles = [];
+            if (stdout && stdout.length > 0) {
+              untrackedFiles = stdout.split('\n');
+            }
+            cb();
+          }
+        }
+      },
+
+      'git-add': {
+        command: function(repo, file) {
+          var commandString = 'git --git-dir=./repos/' + repo + '/.git/ --work-tree=./repos/' + repo + '/ add ' + file;
+          return commandString;
         }
       },
 
@@ -220,6 +245,30 @@ module.exports = function(grunt) {
     }
   });
 
+  grunt.registerTask('handle-untracked-files', function() {
+    if (!dirtyRepos || dirtyRepos.length == 0) {
+      return;
+    }
+    else {
+      for (var i = 0; i < dirtyRepos.length; i++) {
+        var listString = 'shell:git-list-untracked-files:' + dirtyRepos[i];
+        grunt.task.run([listString, 'add-untracked-files:' + dirtyRepos[i]]);
+      }
+    }
+  });
+
+  grunt.registerTask('add-untracked-files', function(repo) {
+    if (untrackedFiles.length > 0) {
+      grunt.log.writeln('Adding untracked files in ' + repo + ':');
+    }
+    for (var i = 0; i < untrackedFiles.length; i++) {
+      if (untrackedFiles[i].length > 0) {
+        grunt.log.writeln(untrackedFiles[i]);
+        grunt.task.run(['shell:git-add:' + repo + ':' + untrackedFiles[i]]);
+      }
+    }
+  });
+
   grunt.registerTask('push-changes-to-dirtyRepos', function(comment) {
     if (!dirtyRepos || dirtyRepos.length == 0) {
       grunt.log.writeln('There are no modified components to push');
@@ -253,7 +302,7 @@ module.exports = function(grunt) {
       return;
     }
 
-    grunt.task.run(['check-status', 'push-changes-to-dirtyRepos:' + comment]);
+    grunt.task.run(['check-status', 'handle-untracked-files', 'push-changes-to-dirtyRepos:' + comment]);
   });
 
   grunt.registerTask('setup', function() {
