@@ -22,6 +22,7 @@ module.exports = function(grunt) {
     'basic-carousel-fit',
     'basic-children-content',
     'basic-content-items',
+    'basic-culture-selector',
     'basic-data-items',
     'basic-days-of-week',
     'basic-direction-selection',
